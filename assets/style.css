@@ -7,6 +7,9 @@ body {
 textarea{
   background: transparent;
   border: none;
+  margin: 0;
+  width: 100%;
+  height: 100%;
   resize: none;
   color: #000000;
   border-left: 1px solid black;
@@ -22,6 +25,7 @@ textarea{
 }
 
 .description{
+  padding: 0;
   white-space: pre-wrap;
 }
 
