@@ -8,8 +8,8 @@ textarea{
   background: transparent;
   border: none;
   margin: 0;
-  width: 100%;
-  height: 100%;
+  width: 100%; /**/
+  height: 100%; /**/
   resize: none;
   color: #000000;
   border-left: 1px solid black;
@@ -17,6 +17,8 @@ textarea{
 }
 
 .jumbotron {
+  width: 100%; /**/
+  padding: 32px 0px 32px 0px; /**/
   text-align: center;
   background-color: transparent;
   color: black;
@@ -41,7 +43,9 @@ textarea{
 }
 
 .hour {
+  padding: 10px 10px 0px 0px;
   background-color: #ffffff;
+  text-align: end;
   color: #000000;
   border-top: 1px dashed #000000;
 }
