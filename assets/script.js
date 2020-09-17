@@ -1,8 +1,11 @@
 // Grab the current moment
 var timeStamp = moment();
+// Use this variable to increment when changing days
+var timeStampMutable = moment().startOf('day').add(moment().format('H'), 'hours');
+var timeStampMutableBlockHour = moment();
 // Display current date in header
 function loadDate() {
-    var displayDate = timeStamp.format('dddd, MMMM Do');
+    var displayDate = timeStampMutable.format('dddd, MMMM Do');
     $("#currentDay").text(displayDate);
     console.log(timeStamp)
 }
@@ -18,27 +21,26 @@ function loadStyling() {
     for (let i=0; i<descriptions.length; i++) {
         description = descriptions[i];
         // Set data-hour attributes on initial page load only
-        // TODO: Define a different timeStamp that I can change for each day while leaving timeStamp the same
-        if (firstLoad) {
-            var blockHour = moment().startOf('day').add((i+9), 'hours').format("MM-DD-YYYY, HH:hh");
-            $(description).attr("data-hour", blockHour)
-        } else {
-            var blockHour = $(description).attr("data-hour");
-        }
-        console.log(blockHour)
+        // if (firstLoad) {
+            var blockHour = timeStampMutableBlockHour.startOf('day').add((i+9), 'hours');
+            $(description).attr("data-hour", blockHour.format());
+        // } else {
+        //     var blockHour = moment($(description).attr("data-hour"));
+        // }
+        // console.log(blockHour)
         // Fill value of Event
         $(description)[0].firstChild.value = localStorage.getItem(blockHour)
         // Remove current classes
         $(description).removeClass("past present future");
-        if (moment(blockHour) < moment()) {
+        if (blockHour.isBefore(timeStampMutable, 'hour')) {
             $(description).addClass("past");
-            console.log("past", moment(), blockHour)
-        } else if (moment(blockHour) === moment()) {
+            console.log("past", timeStampMutable.format(), blockHour.format())
+        } else if (blockHour.isSame(timeStampMutable, 'hour')) {
             $(description).addClass("present");
-            console.log("present", moment(), blockHour)
-        } else if (moment(blockHour) > moment()) {
+            console.log("present", timeStampMutable.format(), blockHour.format())
+        } else if (blockHour.isAfter(timeStampMutable, 'hour')) {
             $(description).addClass("future");
-            console.log("future", moment(), blockHour)
+            console.log("future", timeStampMutable.format(), blockHour.format())
         }
     }
     firstLoad = false;
@@ -60,9 +62,9 @@ $(".saveBtn").on("click", function() {
 
 $(".btn").on("click", function() {
     if ($(this).attr("data-day") === 'next') {
-        timeStamp.add(1, 'days');
+        timeStampMutableBlockHour.add(1, 'days');
     } else {
-        timeStamp.subtract(1, 'days');
+        timeStampMutableBlockHour.subtract(1, 'days');
     }
     loadDate();
     loadStyling();

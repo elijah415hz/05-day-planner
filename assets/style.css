@@ -17,8 +17,8 @@ textarea{
 }
 
 .jumbotron {
-  width: 100%; /**/
-  padding: 32px 0px 32px 0px; /**/
+  /* width: 100%;  */
+  /* padding: 32px 0px 32px 0px;  */
   text-align: center;
   background-color: transparent;
   color: black;
