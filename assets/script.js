@@ -1,48 +1,71 @@
+// TODO: Dynamically generate elements on load
+
+
 // Grab the current moment
 var timeStamp = moment();
 // Use this variable to increment when changing days
 var timeStampMutable = moment();
-var timeStampMutableBlockHour = moment();
 // Display current date in header
 function loadDate() {
-    var displayDate = timeStampMutableBlockHour.format('dddd, MMMM Do');
+    var displayDate = timeStampMutable.format('dddd, MMMM Do');
     $("#currentDay").text(displayDate);
 }
 loadDate();
 
-var firstLoad = true;
-// Grab all event description divs for later iterating
-var descriptions = $(".description");
+// load timeBlocks ================================================================
+var container = $("<div class='container'>")
+$("body").append(container);
+for (var i=0; i<9; i++) {
+    var timeBlock = $("<div class='row time-block'>")
+    container.append(timeBlock);
+    if (i<4) {
+        hour = (i+9)+"AM";
+    } else {
+        hour = (i-3)+"PM";
+    }
+    timeBlock.append($("<div class='col-2 col-sm-1 hour'>").text(hour))
+    var eventDescriptionBlock = $("<div class='col-8 col-sm-10 description'>");
+    timeBlock.append(eventDescriptionBlock);
+    eventDescriptionBlock.append($("<textarea>"));
+    var saveButton = $("<button class='col-2 col-sm-1 saveBtn'>");
+    timeBlock.append(saveButton);
+    saveButton.append($("<i class='fa fa-save'>"));
+}
+var buttonRow = $("<div class='row'>");
+container.append(buttonRow);
+var prevBtn = $("<button class='col-3 col-2-sm btn btn-warning' data-day='previous'>");
+prevBtn.append($("<i class='fa fa-arrow-left'>").html("<br>Previous"));
+buttonRow.append(prevBtn);
+buttonRow.append($("<div class='col-6 col-8-sm'>"));
+var nextBtn = $("<button class='col-3 col-2-sm btn btn-warning' data-day='previous'>");
+nextBtn.append($("<i class='fa fa-arrow-right'>").html("<br>Next"));
+buttonRow.append(nextBtn);
+//=============================================================================
 
 // Set styling for event blocks based on current timestamp
 function loadStyling() {
     console.log("styling")
-    for (let i=0; i<descriptions.length; i++) {
-        description = descriptions[i];
-        // Set data-hour attributes on initial page load only
-        // if (firstLoad) {
-            var blockHour = timeStampMutableBlockHour.startOf('day').add((i+9), 'hours');
-            $(description).attr("data-hour", blockHour.format());
-        // } else {
-        //     var blockHour = moment($(description).attr("data-hour"));
-        // }
-        // console.log(blockHour)
+    // Iterate over all event description divs
+    $(".description").each(function(index) {
+        var blockHour = timeStampMutable.startOf('day').add((index+9), 'hours');
+        $(this).attr("data-hour", blockHour.format());
+        
+        console.log(JSON.stringify($(this)))
         // Fill value of Event
-        $(description)[0].firstChild.value = localStorage.getItem(blockHour.format())
+        $(this)[0].firstChild.value = localStorage.getItem(blockHour.format())
         // Remove current classes
-        $(description).removeClass("past present future");
-        if (blockHour.isBefore(timeStampMutable, 'hour')) {
-            $(description).addClass("past");
-            console.log("past", timeStampMutable.format(), blockHour.format())
-        } else if (blockHour.isSame(timeStampMutable, 'hour')) {
-            $(description).addClass("present");
-            console.log("present", timeStampMutable.format(), blockHour.format())
-        } else if (blockHour.isAfter(timeStampMutable, 'hour')) {
-            $(description).addClass("future");
-            console.log("future", timeStampMutable.format(), blockHour.format())
+        $(this).removeClass("past present future");
+        if (blockHour.isBefore(timeStamp, 'hour')) {
+            $(this).addClass("past");
+            console.log("past", timeStamp.format(), blockHour.format())
+        } else if (blockHour.isSame(timeStamp, 'hour')) {
+            $(this).addClass("present");
+            console.log("present", timeStamp.format(), blockHour.format())
+        } else if (blockHour.isAfter(timeStamp, 'hour')) {
+            $(this).addClass("future");
+            console.log("future", timeStamp.format(), blockHour.format())
         }
-    }
-    firstLoad = false;
+    })
 }
 loadStyling();
 
@@ -59,12 +82,19 @@ $(".saveBtn").on("click", function() {
     console.log(localStorage.getItem(eventIndex));
 })
 
+// Click event for previous and next buttons
 $(".btn").on("click", function() {
     if ($(this).attr("data-day") === 'next') {
-        timeStampMutableBlockHour.add(1, 'days');
+        timeStampMutable.add(1, 'days');
     } else {
-        timeStampMutableBlockHour.subtract(1, 'days');
+        timeStampMutable.subtract(1, 'days');
     }
     loadDate();
     loadStyling();
 })
+
+// Reload styling every 5 minutes
+var resetStyling = setInterval(function() {
+    timeStamp = moment();
+    loadStyling();
+}, 300000);
