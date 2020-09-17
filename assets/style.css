@@ -78,4 +78,8 @@ textarea{
   transition: all .3s ease-in-out;
 }
 
+.btn {
+  border-radius: 15px;
+}
+
 
