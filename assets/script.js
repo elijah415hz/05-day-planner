@@ -37,7 +37,7 @@ var prevBtn = $("<button class='col-3 col-2-sm btn btn-warning' data-day='previo
 prevBtn.append($("<i class='fa fa-arrow-left'>").html("<br>Previous"));
 buttonRow.append(prevBtn);
 buttonRow.append($("<div class='col-6 col-8-sm'>"));
-var nextBtn = $("<button class='col-3 col-2-sm btn btn-warning' data-day='previous'>");
+var nextBtn = $("<button class='col-3 col-2-sm btn btn-warning' data-day='next'>");
 nextBtn.append($("<i class='fa fa-arrow-right'>").html("<br>Next"));
 buttonRow.append(nextBtn);
 //=============================================================================
