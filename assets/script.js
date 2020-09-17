@@ -1,46 +1,50 @@
+// Grab the current moment
+var timeStamp = moment();
 // Display current date in header
-var currentDate = moment().format('dddd, MMMM Do');
-$("#currentDay").text(currentDate);
-// TODO: Not in the assignment, but multi-day would be great. 
-// Maybe add 24 hours to wherever I storing the value of the hours, 
-// and then the past, present, future styling should work without new code
-
-var currentHour =  parseInt(moment().format('H'));
-// for (let i=0; i<8; i++) {
-    //     let block = $(`.${i}`);
-//     let blockHour = parseInt(block.attr("data-hour"));
-//       if (blockHour < currentHour) {
-    //         block.addClass("past");
-    //     } else if (blockHour === currentHour) {
-        //         block.addClass("present");
-        //     } else if (blockHour > currentHour) {
-//         block.addClass("future");
-//     }
-// }
-
-var descriptions = $(".description");
-// Load in Events
-for (let i=0; i<descriptions.length; i++) {
-    description = descriptions[i];
-
+function loadDate() {
+    var displayDate = timeStamp.format('dddd, MMMM Do');
+    $("#currentDay").text(displayDate);
+    console.log(timeStamp)
 }
+loadDate();
 
+var firstLoad = true;
+// Grab all event description divs for later iterating
+var descriptions = $(".description");
 
 // Set styling for event blocks based on current timestamp
-for (let i=0; i<descriptions.length; i++) {
-    description = descriptions[i];
-    // console.log(description);
-    let blockHour = parseInt($(description).attr("data-hour"));
-    // Fill value of Event
-    $(description)[0].firstChild.value = localStorage.getItem(blockHour)
-    if (blockHour < currentHour) {
-          $(description).addClass("past");
-    } else if (blockHour === currentHour) {
-        $(description).addClass("present");
-    } else if (blockHour > currentHour) {
-        $(description).addClass("future");
+function loadStyling() {
+    console.log("styling")
+    for (let i=0; i<descriptions.length; i++) {
+        description = descriptions[i];
+        // Set data-hour attributes on initial page load only
+        // TODO: Define a different timeStamp that I can change for each day while leaving timeStamp the same
+        if (firstLoad) {
+            var blockHour = moment().startOf('day').add((i+9), 'hours').format("MM-DD-YYYY, HH:hh");
+            $(description).attr("data-hour", blockHour)
+        } else {
+            var blockHour = $(description).attr("data-hour");
+        }
+        console.log(blockHour)
+        // Fill value of Event
+        $(description)[0].firstChild.value = localStorage.getItem(blockHour)
+        // Remove current classes
+        $(description).removeClass("past present future");
+        if (moment(blockHour) < moment()) {
+            $(description).addClass("past");
+            console.log("past", moment(), blockHour)
+        } else if (moment(blockHour) === moment()) {
+            $(description).addClass("present");
+            console.log("present", moment(), blockHour)
+        } else if (moment(blockHour) > moment()) {
+            $(description).addClass("future");
+            console.log("future", moment(), blockHour)
+        }
     }
+    firstLoad = false;
 }
+loadStyling();
+
 
 // Click event for save buttons
 $(".saveBtn").on("click", function() {
@@ -52,4 +56,14 @@ $(".saveBtn").on("click", function() {
     // Or don't use JSON...
     localStorage.setItem(eventIndex, eventText)
     console.log(localStorage.getItem(eventIndex));
+})
+
+$(".btn").on("click", function() {
+    if ($(this).attr("data-day") === 'next') {
+        timeStamp.add(1, 'days');
+    } else {
+        timeStamp.subtract(1, 'days');
+    }
+    loadDate();
+    loadStyling();
 })
