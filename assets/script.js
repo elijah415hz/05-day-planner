@@ -1,9 +1,7 @@
-// TODO: Dynamically generate elements on load
-
-
 // Grab the current moment
 var timeStamp = moment();
-// Use this variable to increment when changing days
+// Use this variable for setting blockHours and for displaying current day
+// This extra variable is needed because of the mutability of moment.js objects
 var timeStampMutable = moment();
 // Display current date in header
 function loadDate() {
@@ -12,9 +10,10 @@ function loadDate() {
 }
 loadDate();
 
-// load timeBlocks ================================================================
+// Dynamically generate elements ====================================================
 var container = $("<div class='container'>")
 $("body").append(container);
+// generate time blocks for each working day hour
 for (var i=0; i<9; i++) {
     var timeBlock = $("<div class='row time-block'>")
     container.append(timeBlock);
@@ -23,14 +22,18 @@ for (var i=0; i<9; i++) {
     } else {
         hour = (i-3)+"PM";
     }
+    // hour label
     timeBlock.append($("<div class='col-2 col-sm-1 hour'>").text(hour))
+    // event description
     var eventDescriptionBlock = $("<div class='col-8 col-sm-10 description'>");
     timeBlock.append(eventDescriptionBlock);
     eventDescriptionBlock.append($("<textarea>"));
+    // save button
     var saveButton = $("<button class='col-2 col-sm-1 saveBtn'>");
     timeBlock.append(saveButton);
     saveButton.append($("<i class='fa fa-save'>"));
 }
+// navigation buttons
 var buttonRow = $("<div class='row'>");
 container.append(buttonRow);
 var prevBtn = $("<button class='col-3 col-2-sm btn btn-warning' data-day='previous'>");
@@ -44,26 +47,23 @@ buttonRow.append(nextBtn);
 
 // Set styling for event blocks based on current timestamp
 function loadStyling() {
-    console.log("styling")
     // Iterate over all event description divs
     $(".description").each(function(index) {
         var blockHour = timeStampMutable.startOf('day').add((index+9), 'hours');
         $(this).attr("data-hour", blockHour.format());
-        
-        console.log(JSON.stringify($(this)))
         // Fill value of Event
+        // For some reason, the actual element is at index 0 of "$(this)".
+        // .firstChild is the <textarea>
         $(this)[0].firstChild.value = localStorage.getItem(blockHour.format())
         // Remove current classes
         $(this).removeClass("past present future");
+        // Add appropriate class to apply styling
         if (blockHour.isBefore(timeStamp, 'hour')) {
             $(this).addClass("past");
-            console.log("past", timeStamp.format(), blockHour.format())
         } else if (blockHour.isSame(timeStamp, 'hour')) {
             $(this).addClass("present");
-            console.log("present", timeStamp.format(), blockHour.format())
         } else if (blockHour.isAfter(timeStamp, 'hour')) {
             $(this).addClass("future");
-            console.log("future", timeStamp.format(), blockHour.format())
         }
     })
 }
