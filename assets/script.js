@@ -1,13 +1,12 @@
 // Grab the current moment
 var timeStamp = moment();
 // Use this variable to increment when changing days
-var timeStampMutable = moment().startOf('day').add(moment().format('H'), 'hours');
+var timeStampMutable = moment();
 var timeStampMutableBlockHour = moment();
 // Display current date in header
 function loadDate() {
-    var displayDate = timeStampMutable.format('dddd, MMMM Do');
+    var displayDate = timeStampMutableBlockHour.format('dddd, MMMM Do');
     $("#currentDay").text(displayDate);
-    console.log(timeStamp)
 }
 loadDate();
 
@@ -29,7 +28,7 @@ function loadStyling() {
         // }
         // console.log(blockHour)
         // Fill value of Event
-        $(description)[0].firstChild.value = localStorage.getItem(blockHour)
+        $(description)[0].firstChild.value = localStorage.getItem(blockHour.format())
         // Remove current classes
         $(description).removeClass("past present future");
         if (blockHour.isBefore(timeStampMutable, 'hour')) {
