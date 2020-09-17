@@ -1,7 +1,7 @@
 # 05-Day-Planner
 ![Day Planner Thumbnail](assets/screenshotPlanner.png)
 
-The day-planner is a simple web based planner that allows you to enter events by hour for any hour from 9 to 5. It is meant to be used for work-day scheduling and uses local storage to store the user entries persistantly. 
+day-planner is a simple web based planner that allows you to enter events by hour for any hour from 9 to 5. It is meant to be used for work-day scheduling and uses local storage to store the user entries persistantly. 
 
 In addition to offering multi-day support, it uses dynamic styling to easily highlight the current hour. This styling will update even without a browser refresh through use of a setInterval function.
 
